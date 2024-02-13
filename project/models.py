@@ -41,3 +41,8 @@ class Report(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     reason = models.TextField()
           
+
+class ReportComment(models.Model):
+    
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)  # New field
+    comment_reason = models.TextField()

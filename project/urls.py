@@ -10,4 +10,5 @@ urlpatterns = [
     path('create',views.createproject,name="project.create"),
     path('report/<int:proid>', views.report_project, name='projects.report'),
     path('thank-you-for-reporting/', views.thank_you_for_reporting, name='thank_you_for_reporting'),
+    path('reportcomment/<int:comment_id>', views.report_comment, name='report_comment'),
 ]

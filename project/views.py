@@ -79,3 +79,19 @@ def report_project(request, proid):
 
 def thank_you_for_reporting(request):
     return render(request, 'projectdir/thank_you_for_reporting.html')
+
+
+def report_comment(request, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    if request.method == 'POST':
+        form = ReportCommentForm(request.POST)
+        if form.is_valid():
+            reason = form.cleaned_data['comment_reason']
+            report = ReportComment(comment=comment, comment_reason=reason)
+            report.save()
+            return redirect('thank_you_for_reporting')  # Redirect after successful report
+        else:
+            print(form.errors)  # Print form errors for debugging
+    else:
+        form = ReportCommentForm()
+    return render(request, 'projectdir/report_comment.html', {'form': form, 'comment': comment})

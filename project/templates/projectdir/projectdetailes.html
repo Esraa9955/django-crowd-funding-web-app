@@ -162,6 +162,16 @@
             <div class="comment">
                 <p>{{ comment.content }}</p>
                 <p class="author">Posted at: {{ comment.created_at }}</p>
+
+            
+   <!-- Form to report comment -->
+   <form method="post" action="{% url 'report_comment' comment.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Report Comment</button>
+</form>
+
+
             </div>
             {% endfor %}
             {% else %}
