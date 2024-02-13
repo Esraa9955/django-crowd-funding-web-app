@@ -7,12 +7,6 @@ class Project(models.Model):
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     
-    
-
-class ProjectImage(models.Model):
-    project = models.ForeignKey(Project, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='project/images/', blank=True, null=True)   
-
     @classmethod
     def project_list(self):
         return self.objects.all()
@@ -20,6 +14,12 @@ class ProjectImage(models.Model):
     @classmethod
     def project_detailes(cls, proid):
         return cls.objects.get(id=proid)
+
+class ProjectImage(models.Model):
+    project = models.ForeignKey(Project, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='project/images/', blank=True, null=True)   
+
+   
 
 
 

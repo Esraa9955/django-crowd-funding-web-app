@@ -5,8 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 
 def projectslist(request):
-
-    return render(request, 'projectdir/projectlist.html')
+    context = {'myprojectslist': Project.project_list()}  # from db
+    return render(request, 'projectdir/projectlist.html',context)
 
 
 def projectdetailes(request, proid):
@@ -40,21 +40,4 @@ def createproject(request):
 
 
 
-'''
-def create_campaign(request):
-    if request.method == 'POST':
-        form = ProjectForm(request.POST)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=ProjectImage.objects.none())
-        if form.is_valid() and formset.is_valid():
-            Pro = form.save()
-            for form in formset.cleaned_data:
-                if form:
-                    image = form['image']
-                    photo = ProjectImage(campaign=Pro, image=image)
-                    photo.save()
-            return redirect('campaign_created')  # Redirect to a success page
-    else:
-        form = ProjectForm()
-        formset = ImageFormSet(queryset=ProjectImage.objects.none())
-    return render(request, 'campaign_create.html', {'form': form, 'formset': formset})
-    '''
+
