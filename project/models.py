@@ -8,6 +8,7 @@ class Project(models.Model):
     end_time = models.DateTimeField(null=True)
     donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
+    
     @classmethod
     def project_list(self):
         return self.objects.all()
@@ -26,3 +27,11 @@ class ProjectImage(models.Model):
     def getimageurl(self):
         return f'/media/{self.image}'
 
+
+class Comment(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

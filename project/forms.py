@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project, ProjectImage
+from .models import *
 
 class ProjectForm(forms.ModelForm):
     class Meta:
@@ -14,3 +14,7 @@ class ImageForm(forms.ModelForm):
 ImageFormSet = forms.inlineformset_factory(Project, ProjectImage, form=ImageForm, extra=3)  # Allow 3 extra image fields
 
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
