@@ -14,7 +14,7 @@ def projectdetailes(request, proid):
     pro = Project.objects.get(id=proid)
     comments = pro.comments.all()
     comment_form = CommentForm()
-
+    reports = Report.objects.filter(project=pro)
     if request.method == 'POST':
         print("POST request received")
         print(request.POST)  # Print POST data for debugging
@@ -41,7 +41,7 @@ def projectdetailes(request, proid):
         else:
             print("Unknown form submitted")
 
-    context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form}
+    context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,'reports': reports, 'report_form': ReportForm()  }
     return render(request, 'projectdir/projectdetailes.html', context)
 
 
@@ -61,3 +61,21 @@ def createproject(request):
         metaform = ProjectForm()
         formset = ImageFormSet()
     return render(request, 'projectdir/projectcreate.html', {'metaform':  metaform, 'formset': formset})
+
+
+def report_project(request, proid):
+    project = Project.objects.get(id=proid)
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            reason = form.cleaned_data['reason']
+            # Create a new report instance and save it
+            report = Report(project=project, reason=reason)
+            report.save()
+            return redirect('thank_you_for_reporting')
+    else:
+        form = ReportForm()
+    return render(request, 'projectdir/report_project.html', {'form': form, 'project': project})
+
+def thank_you_for_reporting(request):
+    return render(request, 'projectdir/thank_you_for_reporting.html')

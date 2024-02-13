@@ -18,3 +18,7 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+
+
+class ReportForm(forms.Form):
+    reason = forms.CharField(widget=forms.Textarea)        

@@ -7,7 +7,7 @@ class Project(models.Model):
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    
+
     
     @classmethod
     def project_list(self):
@@ -35,3 +35,9 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class Report(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    reason = models.TextField()
+          
