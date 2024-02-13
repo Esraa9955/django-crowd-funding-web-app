@@ -10,7 +10,11 @@ def projectslist(request):
 
 
 def projectdetailes(request, proid):
-    return render(request, 'projectdir/projectdetailes.html')
+    pro = Project.objects.get(id=proid)
+    context = {'project': pro,
+              'images': pro.images.all()
+               }
+    return render(request, 'projectdir/projectdetailes.html',context)
 
 
 def createproject(request):

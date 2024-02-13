@@ -19,7 +19,9 @@ class ProjectImage(models.Model):
     project = models.ForeignKey(Project, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='project/images/', blank=True, null=True)   
 
-   
+    def project_image_detailes(cls, proid):
+        return cls.objects.get(id=proid)
 
-
+    def getimageurl(self):
+        return f'/media/{self.image}'
 

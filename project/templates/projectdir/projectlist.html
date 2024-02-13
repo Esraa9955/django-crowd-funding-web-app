@@ -114,7 +114,7 @@
                 <td>{{ project.total_target }}</td>
                 <td>{{ project.start_time }}</td>
                 <td>{{ project.end_time }}</td>
-                <td><a class="mybtn">Show details</a><br>
+                <td><a class="mybtn" href="{% url 'project.detailes' project.id%}" >Show details</a><br>
                     <a class="mybtn">Donate</a><br>
                 </td>
 

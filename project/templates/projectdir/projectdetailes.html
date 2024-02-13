@@ -1,1 +1,84 @@
-<h1>project details</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details</title>
+   
+</head>
+<style>
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    max-width: 800px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.details {
+    max-width: 400px;
+    padding: 0 20px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+h1 {
+    color: #3498db;
+    margin-bottom: 20px;
+}
+
+.detail-text {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.images {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.project-image {
+    max-width: 200px;
+    height: auto;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.project-image:hover {
+    transform: scale(1.1);
+}
+
+
+</style>
+<body>
+    <div class="container">
+        <div class="details">
+            <h1>{{ project.title }} Details</h1>
+            <p class="detail-text">Details: {{ project.details }}</p>
+            <p class="detail-text">Total Target: {{ project.total_target }}</p>
+            <p class="detail-text">start_time: {{ project.start_time }}</p>
+            <p class="detail-text">end_time: {{ project.end_time }}</p>
+        </div>
+        <div class="images">
+            {% for image in images %}
+            <img class="project-image" src="{{ image.image.url }}" alt="{{ project.title }} Image">
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
