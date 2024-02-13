@@ -12,3 +12,5 @@ class ImageForm(forms.ModelForm):
         fields = ['image']
 
 ImageFormSet = forms.inlineformset_factory(Project, ProjectImage, form=ImageForm, extra=3)  # Allow 3 extra image fields
+
+

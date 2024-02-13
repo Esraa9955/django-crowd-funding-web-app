@@ -6,6 +6,7 @@ class Project(models.Model):
     total_target = models.DecimalField(max_digits=10, decimal_places=2)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
+    donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
     @classmethod
     def project_list(self):

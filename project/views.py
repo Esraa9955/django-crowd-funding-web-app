@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from .models import *
 from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
-
+from decimal import Decimal
 
 def projectslist(request):
     context = {'myprojectslist': Project.project_list()}  # from db
@@ -14,6 +14,15 @@ def projectdetailes(request, proid):
     context = {'project': pro,
               'images': pro.images.all()
                }
+    
+    if request.method == 'POST':
+        donation_amount = Decimal(request.POST.get('donation_amount', 0))
+        if donation_amount > 0:
+            # Update the project's total donation amount
+            pro.donation_amount +=donation_amount
+            pro.save()
+            return redirect(reverse("projects.list"))
+
     return render(request, 'projectdir/projectdetailes.html',context)
 
 

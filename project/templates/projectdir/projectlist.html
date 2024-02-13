@@ -98,10 +98,10 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Details</th>
+                
                 <th>Total target</th>
-                <th>Start time</th>
-                <th>End time</th>
+
+                <th>Donation Amount</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -110,12 +110,12 @@
             <tr>
                 <td>{{ project.id }}</td>
                 <td>{{ project.title }}</td>
-                <td>{{ project.details }}</td>
+               
                 <td>{{ project.total_target }}</td>
-                <td>{{ project.start_time }}</td>
-                <td>{{ project.end_time }}</td>
-                <td><a class="mybtn" href="{% url 'project.detailes' project.id%}" >Show details</a><br>
-                    <a class="mybtn">Donate</a><br>
+
+                <td>{{ project.donation_amount }}</td>
+                <td><a class="mybtn" href="{% url 'project.detailes' project.id%}">Show details</a><br>
+
                 </td>
 
 
