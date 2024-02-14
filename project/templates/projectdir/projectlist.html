@@ -64,7 +64,7 @@
 
 
     .add {
-        display: block;
+        /* display: block; */
         margin-bottom: 20px;
         padding: 10px;
         background-color: black;
@@ -90,7 +90,18 @@
 <body>
 
 
-    <div class="all"><a class="add" href="{%url 'project.create'%}">create Project</a></div>
+    <div class="all"><a class="add" href="{%url 'project.create'%}">create Project</a>
+        {%if user.id%}
+        <form method="post" action="{% url 'logout' %}" >
+            {%csrf_token%}
+            <button type="submit" class="add">Logout</button>
+            </form>
+        {%else%}
+        <a class="add" href="{%url 'login'%}">Login</a>
+        {%endif%}
+        <a class="add" href="{%url 'RegistrationForm'%}">Register</a>
+        <a class="add" href="{%url 'myProfile'%}">Profile</a>
+    </div>
 
     {% if myprojectslist %}
     <table border="5px">

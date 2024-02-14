@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
-    'project.apps.ProjectConfig'
+    'project.apps.ProjectConfig',
+    'accounts.apps.AccountsConfig',
     
 ]
 
@@ -47,7 +48,7 @@ ROOT_URLCONF = 'crowdFunding.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR/'templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,7 +74,7 @@ DATABASES = {
         "HOST": "localhost",
         "PORT":"5432",
         "USER":"postgres",
-        "PASSWORD":"1234"
+        "PASSWORD":"1411"
     }
 }
 
@@ -115,6 +116,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 MEDIA_URL="media/"
 MEDIA_ROOT=os.path.join(BASE_DIR,"media/")
+
+LOGOUT_REDIRECT_URL = 'projects.list'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

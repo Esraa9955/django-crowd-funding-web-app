@@ -3,7 +3,7 @@ from .models import *
 from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
 from decimal import Decimal
-
+from django.contrib.auth.decorators import login_required
 
 def projectslist(request):
     context = {'myprojectslist': Project.project_list()}  # from db
@@ -45,7 +45,7 @@ def projectdetailes(request, proid):
     return render(request, 'projectdir/projectdetailes.html', context)
 
 
-
+@login_required()
 def createproject(request):
     if request.method == 'POST':
         metaform = ProjectForm(request.POST)
