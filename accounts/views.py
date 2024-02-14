@@ -26,4 +26,12 @@ class RegistrationForm(CreateView):
 
 
 
-   
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('myProfile')  # Redirect to a success page
+    else:
+        form = RegistrationForm()
+    return render(request, 'registration/register.html', {'form': form})
