@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+
 class Project(models.Model):
     title = models.CharField(max_length=255)
     details = models.TextField()
@@ -53,4 +54,5 @@ class ReportComment(models.Model):
 class ProjectRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    rating = models.IntegerField(default=0)  # Rating from 0 to 5
+    rating = models.IntegerField()  
+  

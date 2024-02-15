@@ -6,7 +6,7 @@ from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectRating
 from .forms import RatingForm
-import logging
+from django.db.models import Avg
 
 def projectslist(request):
     context = {'myprojectslist': Project.project_list()}  # from db
@@ -18,6 +18,10 @@ def projectdetailes(request, proid):
     comments = pro.comments.all()
     comment_form = CommentForm()
     reports = Report.objects.filter(project=pro)
+    # Calculate average rating
+    average_rating = ProjectRating.objects.filter(project=pro).aggregate(Avg('rating'))['rating__avg']
+    
+    
     if request.method == 'POST':
         print("POST request received")
         print(request.POST)  # Print POST data for debugging
@@ -43,9 +47,13 @@ def projectdetailes(request, proid):
                 print("Comment form is not valid")
         else:
             print("Unknown form submitted")
-
-    context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,'reports': reports, 'report_form': ReportForm()  }
+    context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,
+               'reports': reports, 'report_form': ReportForm(), 'average_rating': average_rating}
     return render(request, 'projectdir/projectdetailes.html', context)
+
+    # context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,'reports': reports, 'report_form': ReportForm()  }
+    # return render(request, 'projectdir/projectdetailes.html', context)
+      
 
 
 @login_required()

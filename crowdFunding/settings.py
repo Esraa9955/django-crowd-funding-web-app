@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'project.apps.ProjectConfig',
     'accounts.apps.AccountsConfig',
+    'fontawesome',
+     
     
 ]
 

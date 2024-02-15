@@ -29,5 +29,7 @@ class ReportCommentForm(forms.ModelForm):
         model = ReportComment
         fields = ['comment_reason']   
 
-class RatingForm(forms.Form):
-    rating = forms.IntegerField(min_value=0, max_value=5, widget=forms.NumberInput(attrs={'type': 'hidden'}))
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = ProjectRating
+        fields = ['rating']
