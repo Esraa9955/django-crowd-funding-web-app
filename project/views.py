@@ -4,6 +4,9 @@ from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
 from decimal import Decimal
 from django.contrib.auth.decorators import login_required
+from .models import Project, ProjectRating
+from .forms import RatingForm
+import logging
 
 def projectslist(request):
     context = {'myprojectslist': Project.project_list()}  # from db
@@ -95,3 +98,23 @@ def report_comment(request, comment_id):
     else:
         form = ReportCommentForm()
     return render(request, 'projectdir/report_comment.html', {'form': form, 'comment': comment})
+
+
+
+def rate_project(request, project_id):
+    project = Project.objects.get(id=project_id)
+    user_rating = None
+    if request.method == 'POST':
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            rating_value = form.cleaned_data['rating']
+            ProjectRating.objects.create(user=request.user, project=project, rating=rating_value)
+            return redirect(reverse("project.detailes", kwargs={'proid': project_id}))
+    else:
+        form = RatingForm()
+        # Fetch the user's last rating for the project
+        try:
+            user_rating = ProjectRating.objects.filter(user=request.user, project=project).latest('id').rating
+        except ProjectRating.DoesNotExist:
+            pass
+    return render(request, 'projectdir/rate_project.html', {'form': form, 'project': project, 'user_rating': user_rating})

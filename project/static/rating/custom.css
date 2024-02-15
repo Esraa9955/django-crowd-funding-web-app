@@ -1,0 +1,18 @@
+/* static/rating/custom.css */
+
+/* This rule sets the font size for the star rating */
+.star-rating {
+    font-size: 24px;
+}
+
+/* This rule defines the style for an individual star */
+.star {
+    cursor: pointer; /* Change the cursor to a pointer when hovering over the star, indicating it is clickable */
+    color: #ccc; /* Set the default color of the star to a light gray */
+}
+
+/* This rule defines the style for a selected (filled) star */
+.star.selected {
+    color: #fdd835; /* Change the color of the star to a shade of yellow (in this case, it's a Material Design yellow) to indicate it is selected */
+    /* You can change this color to any other color to suit your design */
+}

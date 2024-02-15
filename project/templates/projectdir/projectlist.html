@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -114,6 +115,7 @@
 
                 <th>Donation Amount</th>
                 <th>Actions</th>
+                <th>Rate</th>
             </tr>
         </thead>
         <tbody>
@@ -128,6 +130,7 @@
                 <td><a class="mybtn" href="{% url 'project.detailes' project.id%}">Show details</a><br>
 
                 </td>
+                <td><a href="{% url 'rate_project' project.id %}">Rate</a></td>
 
 
 
