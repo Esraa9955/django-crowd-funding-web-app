@@ -1,5 +1,60 @@
-<form method="post" action="{% url 'rate_project' project.id %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit Rating</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        /* Your CSS styles here */
+        .stars {
+            display: inline-block;
+            font-size: 24px;
+        }
+
+        .stars .star {
+            color: gray;
+            transition: color 0.25s;
+            cursor: pointer;
+        }
+
+        .stars .star.checked {
+            color: gold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Rate this project</h1>
+    <div class="stars">
+        <span class="star" onclick="setRating(1)"><i class="far fa-star"></i></span>
+        <span class="star" onclick="setRating(2)"><i class="far fa-star"></i></span>
+        <span class="star" onclick="setRating(3)"><i class="far fa-star"></i></span>
+        <span class="star" onclick="setRating(4)"><i class="far fa-star"></i></span>
+        <span class="star" onclick="setRating(5)"><i class="far fa-star"></i></span>
+    </div>
+
+    <!-- Your Django form for rating submission -->
+    <form id="ratingForm" method="post" action="{% url 'rate_project' project.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="rating" id="ratingInput">
+        <button type="submit">Submit Rating</button>
+    </form>
+
+    <script>
+        function setRating(rating) {
+            document.getElementById('ratingInput').value = rating;
+            // Reset all stars' colors
+            const stars = document.querySelectorAll('.star');
+            stars.forEach(star => star.classList.remove('checked'));
+            // Color stars up to the clicked one
+            for (let i = 0; i < rating; i++) {
+                stars[i].classList.add('checked');
+            }
+        }
+    </script>
+</body>
+
+</html>
