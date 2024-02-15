@@ -116,13 +116,18 @@ def rate_project(request, project_id):
         form = RatingForm(request.POST)
         if form.is_valid():
             rating_value = form.cleaned_data['rating']
-            ProjectRating.objects.create(user=request.user, project=project, rating=rating_value)
+            # Check if the user has already rated this project
+            existing_rating = ProjectRating.objects.filter(user=request.user, project=project).first()
+            if existing_rating:
+                existing_rating.rating = rating_value
+                existing_rating.save()
+            else:
+                ProjectRating.objects.create(user=request.user, project=project, rating=rating_value)
             return redirect(reverse("project.detailes", kwargs={'proid': project_id}))
     else:
         form = RatingForm()
-        # Fetch the user's last rating for the project
-        try:
-            user_rating = ProjectRating.objects.filter(user=request.user, project=project).latest('id').rating
-        except ProjectRating.DoesNotExist:
-            pass
+        user_rating_instance = ProjectRating.objects.filter(user=request.user, project=project).first()
+        if user_rating_instance:
+            user_rating = user_rating_instance.rating
+
     return render(request, 'projectdir/rate_project.html', {'form': form, 'project': project, 'user_rating': user_rating})
