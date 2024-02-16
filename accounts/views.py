@@ -9,6 +9,7 @@ from .models import *
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.http import HttpResponseRedirect
+from .forms import *
 # Create your views here.
 
 
@@ -40,16 +41,13 @@ class RegistrationForm(CreateView):
     template_name = 'registration/register.html'
     success_url = reverse_lazy('login')
 
-# def activeEmail(request,user,to_email):
-#     messages.success(request,(request, f'Dear <b>{user.username}</b>, please go to your email <b>{user.email}</b> to complete registration'))
-                     
 
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('myProfile')  # Redirect to a success page
+            return redirect('myProfile')  
     else:
         form = RegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
@@ -87,7 +85,56 @@ def updateUser(request, user_id):
     else:
         context['msg'] = 'Kindly fill all fields'
     return render(request,'registration/update.html',context)
-  
+
+
+
+@login_required
+def additional_info(request):
+    dataformat = None
+    if request.method == 'POST':
+        form = AdditionalInfoForm(request.POST)
+        if form.is_valid():
+            birthdate = form.cleaned_data['birthdate']
+            country = form.cleaned_data['country']
+            facebook = form.cleaned_data['facebook']
+            exist_data = AdditionalInfo.objects.filter(user=request.user).first()
+            if exist_data:
+                exist_data.birthdate = birthdate
+                exist_data.country = country
+                exist_data.facebook = facebook
+                exist_data.save()
+            else:
+                AdditionalInfo.objects.create(user=request.user, birthdate=birthdate, country=country, facebook=facebook)
+            return redirect(reverse('myProfile'))  # Redirect to profile page
+    else:
+        form = AdditionalInfoForm()
+        form_data = AdditionalInfo.objects.filter(user=request.user).first()
+        if form_data:
+            dataformat = form_data  # Assigning the data directly since you need the entire object
+    return render(request, 'registration/additional_info.html', {'form': form, 'dataformat': dataformat})
+
+    # additional_info_instance = AdditionalInfo.objects.filter(user=request.user).first()
+
+    # if request.method == 'POST':
+    #     if additional_info_instance:  
+    #         form = AdditionalInfoForm(request.POST, request.FILES, instance=additional_info_instance)
+    #     else:  
+    #         form = AdditionalInfoForm(request.POST, request.FILES)
+
+    #     if form.is_valid():
+    #         additional_info = form.save(commit=False)
+    #         additional_info.user = request.user
+    #         additional_info.save()
+    #         return redirect('myProfile')  
+    # else:
+    #     if additional_info_instance: 
+    #         form = AdditionalInfoForm(instance=additional_info_instance)
+    #     else: 
+    #         form = AdditionalInfoForm()
+    
+    # return render(request, 'registration/additional_info.html', {'form': form})
+
+   
 
 
     

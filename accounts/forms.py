@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from .models import UserProfile
+from .models import AdditionalInfo
 
 class RegistrationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
@@ -20,3 +21,9 @@ class RegistrationForm(UserCreationForm):
         if not mobile_phone.startswith('+20') or not len(mobile_phone) == 13:
             raise ValidationError("Enter a valid Egyptian phone number.")
         return mobile_phone
+    
+
+class AdditionalInfoForm(forms.ModelForm):
+     class Meta:
+        model = AdditionalInfo
+        fields = ['birthdate', 'country', 'facebook']

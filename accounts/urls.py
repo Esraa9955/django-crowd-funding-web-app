@@ -14,4 +14,5 @@ urlpatterns = [
     path('Delete/<int:user_id>/',views.DeleteAccount,name='DeleteAccount'),
     path('delete_confirmation/<int:user_id>/', views.delete_confirmation, name='delete_confirmation'),
     path('update/<int:user_id>/', views.updateUser, name='update_user'),
+    path('info/', views.additional_info, name='additional_info'),
 ]

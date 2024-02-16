@@ -11,3 +11,8 @@ class UserProfile(models.Model):
         return self.user.username
     
     
+class AdditionalInfo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE,default=None)
+    birthdate = models.DateField()
+    country = models.CharField(max_length=20)
+    facebook = models.URLField(max_length=200)
