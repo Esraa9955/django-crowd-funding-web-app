@@ -10,6 +10,7 @@ class Project(models.Model):
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
 
     
     @classmethod

@@ -37,5 +37,7 @@
         <h2>{{ user.first_name }} {{ user.last_name }}</h2>
         <p class="username">@{{ user.username }}</p>
     </div>
+    <a class="add" href="{%url 'update_user' user_id=user.id %}">Update</a>
+    <a href="{% url 'delete_confirmation' user_id=user.id %}" class="add">Delete Account</a>
 </body>
 </html>
