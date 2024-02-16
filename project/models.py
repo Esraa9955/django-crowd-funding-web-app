@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 
 class Project(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,default=None)
     title = models.CharField(max_length=255)
     details = models.TextField()
     total_target = models.DecimalField(max_digits=10, decimal_places=2)
@@ -20,6 +21,22 @@ class Project(models.Model):
     @classmethod
     def project_detailes(cls, proid):
         return cls.objects.get(id=proid)
+    
+    @property
+    def donation_percentage(self):
+        if self.total_target == 0:
+            return 0
+        return (self.donation_amount / self.total_target) * 100
+
+    @property
+    def is_cancelable(self):
+        return self.donation_percentage < 25
+
+    def cancel_project(self):
+        if self.is_cancelable:
+            self.delete()
+            return True
+        return False
 
 class ProjectImage(models.Model):
     project = models.ForeignKey(Project, related_name='images', on_delete=models.CASCADE)

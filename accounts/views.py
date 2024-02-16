@@ -42,17 +42,25 @@ class RegistrationForm(CreateView):
     success_url = reverse_lazy('login')
 
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = RegistrationForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('myProfile')  
+#     else:
+#         form = RegistrationForm()
+#     return render(request, 'registration/register.html', {'form': form})
+
 def register(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST, request.FILES)
+        form = RegistrationForm(request.POST, request.FILES)  # Pass request.FILES to handle file upload
         if form.is_valid():
             form.save()
             return redirect('myProfile')  
     else:
         form = RegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
-
-
 
 def delete_confirmation(request, user_id):
     user = User.objects.get(id=user_id)

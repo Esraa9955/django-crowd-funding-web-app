@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse,get_object_or_404
 from .models import *
 from .forms import *
 from django.http import HttpResponse, HttpResponseRedirect
@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectRating
 from .forms import RatingForm
 from django.db.models import Avg
+from accounts.models import UserProfile
 
 def projectslist(request):
     context = {'myprojectslist': Project.project_list()}  # from db
@@ -53,16 +54,16 @@ def projectdetailes(request, proid):
 
     # context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,'reports': reports, 'report_form': ReportForm()  }
     # return render(request, 'projectdir/projectdetailes.html', context)
-      
-
-
-@login_required()
+@login_required()      
 def createproject(request):
     if request.method == 'POST':
         metaform = ProjectForm(request.POST)
         formset = ImageFormSet(request.POST, request.FILES)
         if metaform.is_valid() and formset.is_valid():
-            project = metaform.save()
+            project = metaform.save(commit=False)  # Don't save yet
+            project.user = request.user  # Assign the current user
+            project.save()  # Now save the project
+
             for form in formset:
                 image = form.cleaned_data.get('image')
                 if image:
@@ -72,6 +73,23 @@ def createproject(request):
         metaform = ProjectForm()
         formset = ImageFormSet()
     return render(request, 'projectdir/projectcreate.html', {'metaform':  metaform, 'formset': formset})
+
+# @login_required()
+# def createproject(request):
+#     if request.method == 'POST':
+#         metaform = ProjectForm(request.POST)
+#         formset = ImageFormSet(request.POST, request.FILES)
+#         if metaform.is_valid() and formset.is_valid():
+#             project = metaform.save()
+#             for form in formset:
+#                 image = form.cleaned_data.get('image')
+#                 if image:
+#                     ProjectImage.objects.create(project=project, image=image)
+#             return redirect(reverse("projects.list"))
+#     else:
+#         metaform = ProjectForm()
+#         formset = ImageFormSet()
+#     return render(request, 'projectdir/projectcreate.html', {'metaform':  metaform, 'formset': formset})
 
 
 def report_project(request, proid):
@@ -131,3 +149,26 @@ def rate_project(request, project_id):
             user_rating = user_rating_instance.rating
 
     return render(request, 'projectdir/rate_project.html', {'form': form, 'project': project, 'user_rating': user_rating})
+
+def cancel_project(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    if project.is_cancelable:
+        project.delete()
+        return redirect(reverse('projects.list'))
+    else:
+        return redirect('user_profile', project_id=project_id)
+    
+
+def user_projects(request):
+    # Retrieve projects associated with the currently logged-in user
+    user_projects = Project.objects.filter(user=request.user)
+    return render(request, 'projectdir/user_profile.html', {'user_projects': user_projects})
+
+def user_profile(request):
+    # Retrieve the current user's profile picture URL
+    profile_picture_url = None
+    user_profile = UserProfile.objects.filter(user=request.user).first()
+    if user_profile:
+        profile_picture_url = user_profile.profile_picture.url
+
+    return render(request, 'project/user_profile.html', {'profile_picture_url': profile_picture_url})

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
 
 
     <style>
@@ -17,7 +18,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 80%;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -136,19 +137,21 @@
 <body>
     <div class="container">
         <div class="details">
+          
             <h1>{{ project.title }} Details</h1>
             <p class="detail-text"><strong>Details:</strong> {{ project.details }}</p>
             <p class="detail-text"><strong>Total Target:</strong> {{ project.total_target }}</p>
             <p class="detail-text"><strong>Start Time:</strong> {{ project.start_time }}</p>
             <p class="detail-text"><strong>End Time:</strong> {{ project.end_time }}</p>
         </div>
+   
 
         <div class="images">
             {% for image in images %}
             <img class="project-image" src="{{ image.image.url }}" alt="{{ project.title }} Image">
             {% endfor %}
         </div>
-        <div class="container">
+   
             {% with star_width=average_rating|floatformat:"1"|add:"0.5" %}
             <p>Average Rating: <span class="stars">
                     {% for i in "12345" %}
@@ -160,7 +163,7 @@
                     {% endfor %}
                 </span></p>
             {% endwith %}
-        </div>
+        
 
         <div class="form-group donation-form">
             <h2>Donate to Support</h2>
@@ -224,7 +227,9 @@
             <button type="submit">Report Project</button>
         </form>
 
-    </div>
+  
+</div>
+
 </body>
 
 </html>

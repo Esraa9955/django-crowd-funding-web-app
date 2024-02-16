@@ -5,7 +5,6 @@ from django.contrib.auth.views import auth_login, auth_logout
 from django.contrib.auth.views import LogoutView
 
 
-
 urlpatterns = [
     path('',include('django.contrib.auth.urls')),
     path('profile/',views.myProfile,name='myProfile'),
