@@ -4,13 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from .forms import RegistrationForm
 from .models import *
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 from django.http import HttpResponseRedirect
 from .forms import *
-# Create your views here.
+from django.contrib import messages
 
 
 
@@ -36,10 +35,10 @@ def myProfile(request):
     return render(request,'registration/profile.html')
 
 
-class RegistrationForm(CreateView):
-    form_class = RegistrationForm
-    template_name = 'registration/register.html'
-    success_url = reverse_lazy('login')
+# class RegistrationForm(CreateView):
+#     form_class = RegistrationForm
+#     template_name = 'registration/register.html'
+#     success_url = reverse_lazy('login')
 
 
 # def register(request):
@@ -52,14 +51,18 @@ class RegistrationForm(CreateView):
 #         form = RegistrationForm()
 #     return render(request, 'registration/register.html', {'form': form})
 
+
+
 def register(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST, request.FILES)  # Pass request.FILES to handle file upload
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('myProfile')  
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Your account has been created! You are now able to log in')
+            return redirect('userImage')
     else:
-        form = RegistrationForm()
+        form = UserRegisterForm()
     return render(request, 'registration/register.html', {'form': form})
 
 def delete_confirmation(request, user_id):
@@ -120,6 +123,19 @@ def additional_info(request):
         if form_data:
             dataformat = form_data  # Assigning the data directly since you need the entire object
     return render(request, 'registration/additional_info.html', {'form': form, 'dataformat': dataformat})
+@login_required
+def userImage(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('projects.list')  # Assuming you have a URL named 'profile_detail' for profile detail view
+    else:
+        form = ProfileForm()
+    return render(request, 'registration/userImage.html', {'form': form})
+
 
     # additional_info_instance = AdditionalInfo.objects.filter(user=request.user).first()
 

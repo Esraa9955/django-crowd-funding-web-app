@@ -1,52 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>My Projects</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-    <div>
-        {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }}</p>
-        <p>Email: {{ user.email }}</p>
-        {% if profile_picture_url %}
-            <img src="{{ profile_picture_url }}" alt="Profile Picture">
-        {% else %}
-            <p>No profile picture available.</p>
-        {% endif %}
-    {% else %}
-        <p>You are not logged in.</p>
-    {% endif %}
-    </div>
-    
-    <h3 style="margin: 10px 30px;">Projects</h3>
-   
+
     <div class="container">
-        <div class="row">
-            {% for project in user_projects %}
-                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                    <div class="card">
-                        {% if project.images.first %}
-                            <!-- Display the project image if available -->
-                            <img src="{{ project.images.first.image.url }}" class="card-img-top" alt="Project Image">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ project.title }}</h5>
-                            <p class="card-text">{{ project.details }}</p>
-                            {% if project.is_cancelable %}
-                                <form method="post" action="{% url 'cancel_project' project.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-trash-alt"></i> Cancel Project
-                                    </button>
-                                </form>
-                            {% endif %}
+        <div class="row pt-3">
+            <div class="col-md-3 shadow-sm p-3 mb-5 bg-body-tertiary rounded text-center" style="background-color: #eee;">
+                <div>
+                    <img class="rounded-circle account-img" style="height: 150px; width: 150px; border:5px solid white"
+                        src="{{ user.profile.image.url }}">
+                    <h2 > {{ user.username }}</h2>                  
+                </div>
+            </div>
+
+            <div class="col-md-8 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                <h3 style="margin: 10px 30px;">Projects</h3>
+
+                <div class="container">
+                    <div class="row">
+                        {% for project in user_projects %}
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card">
+                                {% if project.images.first %}
+                                <img src="{{ project.images.first.image.url }}" class="card-img-top"
+                                    alt="Project Image">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ project.title }}</h5>
+                                    <p class="card-text">{{ project.details }}</p>
+                                    {% if project.is_cancelable %}
+                                    <form method="post" action="{% url 'cancel_project' project.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-trash-alt"></i> Cancel Project
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
     </div>
+
 </body>
+
 </html>

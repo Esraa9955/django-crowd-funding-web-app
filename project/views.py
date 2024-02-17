@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectRating
 from .forms import RatingForm
 from django.db.models import Avg
-from accounts.models import UserProfile
+
 
 def projectslist(request):
     context = {'myprojectslist': Project.project_list()}  # from db
@@ -164,11 +164,11 @@ def user_projects(request):
     user_projects = Project.objects.filter(user=request.user)
     return render(request, 'projectdir/user_profile.html', {'user_projects': user_projects})
 
-def user_profile(request):
-    # Retrieve the current user's profile picture URL
-    profile_picture_url = None
-    user_profile = UserProfile.objects.filter(user=request.user).first()
-    if user_profile:
-        profile_picture_url = user_profile.profile_picture.url
+# def user_profile(request):
+#     # Retrieve the current user's profile picture URL
+#     profile_picture_url = None
+#     user_profile = UserProfile.objects.filter(user=request.user).first()
+#     if user_profile:
+#         profile_picture_url = user_profile.profile_picture.url
 
-    return render(request, 'project/user_profile.html', {'profile_picture_url': profile_picture_url})
+#     return render(request, 'project/user_profile.html', {'profile_picture_url': profile_picture_url})
