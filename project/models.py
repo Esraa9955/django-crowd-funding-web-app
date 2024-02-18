@@ -50,6 +50,7 @@ class ProjectImage(models.Model):
 
 
 class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -59,12 +60,13 @@ class Comment(models.Model):
 
 
 class Report(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     reason = models.TextField()
           
 
 class ReportComment(models.Model):
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)  # New field
     comment_reason = models.TextField()
 

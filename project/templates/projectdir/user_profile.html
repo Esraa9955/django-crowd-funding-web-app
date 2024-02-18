@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>My Projects</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 </head>
 
 <body>
@@ -72,14 +74,18 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ project.title }}</h5>
                                     <p class="card-text">{{ project.details }}</p>
+                                    <h5 class="card-title">{{ project.donation_amount}}</h5>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <a class="mybtn" href="{% url 'project.detailes' project.id%}">Show details</a>
                                     {% if project.is_cancelable %}
                                     <form method="post" action="{% url 'cancel_project' project.id %}">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-trash-alt"></i> Cancel Project
+                                            <i class="fas fa-trash-alt"></i> 
                                         </button>
                                     </form>
                                     {% endif %}
+                                </div>
                                 </div>
                             </div>
                         </div>

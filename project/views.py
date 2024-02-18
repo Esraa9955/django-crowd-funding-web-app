@@ -14,55 +14,97 @@ def projectslist(request):
     return render(request, 'projectdir/projectlist.html', context)
 
 
+# def projectdetailes(request, proid):
+#     pro = Project.objects.get(id=proid)
+#     comments = pro.comments.all()
+#     comment_form = CommentForm()
+#     reports = Report.objects.filter(project=pro)
+#     # Calculate average rating
+#     average_rating = ProjectRating.objects.filter(project=pro).aggregate(Avg('rating'))['rating__avg']
+#     if request.method == 'POST':
+#         print("POST request received")
+#         print(request.POST)  # Print POST data for debugging
+#         if 'donation_amount' in request.POST:
+#             print("Donation form submitted")
+#             donation_amount = Decimal(request.POST.get('donation_amount', 0))
+#             print("Donation amount:", donation_amount)
+#             if donation_amount > 0:
+#                 pro.donation_amount += donation_amount
+#                 pro.save()
+#                 print("Donation amount updated")
+#                 return redirect(reverse("projects.list"))
+#         elif 'content' in request.POST:
+#             print("Comment form submitted")
+#             comment_form = CommentForm(request.POST)
+#             if comment_form.is_valid():
+#                 new_comment = comment_form.save(commit=False)
+#                 new_comment.project = pro
+#                 new_comment.user = request.user 
+#                 new_comment.save()
+#                 print("Comment saved")
+#                 return redirect("projects.list")
+#             else:
+#                 print("Comment form is not valid")
+#         else:
+#             print("Unknown form submitted")
+#     context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,
+#                'reports': reports, 'report_form': ReportForm(), 'average_rating': average_rating}
+#     return render(request, 'projectdir/projectdetailes.html', context)
+
 def projectdetailes(request, proid):
-    pro = Project.objects.get(id=proid)
+    try:
+        pro = Project.objects.get(id=proid)
+    except Project.DoesNotExist:
+        # Handle the case where the project with the given ID does not exist
+        return redirect('projects.list')  # Redirect to the project list page or another appropriate page
+
     comments = pro.comments.all()
     comment_form = CommentForm()
     reports = Report.objects.filter(project=pro)
+
     # Calculate average rating
     average_rating = ProjectRating.objects.filter(project=pro).aggregate(Avg('rating'))['rating__avg']
-    
-    
+
     if request.method == 'POST':
-        print("POST request received")
-        print(request.POST)  # Print POST data for debugging
         if 'donation_amount' in request.POST:
-            print("Donation form submitted")
             donation_amount = Decimal(request.POST.get('donation_amount', 0))
-            print("Donation amount:", donation_amount)
             if donation_amount > 0:
                 pro.donation_amount += donation_amount
                 pro.save()
-                print("Donation amount updated")
-                return redirect(reverse("projects.list"))
+                return redirect('projects.list')
         elif 'content' in request.POST:
-            print("Comment form submitted")
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 new_comment = comment_form.save(commit=False)
                 new_comment.project = pro
+                new_comment.user = request.user
                 new_comment.save()
-                print("Comment saved")
-                return redirect("projects.list")
-            else:
-                print("Comment form is not valid")
-        else:
-            print("Unknown form submitted")
-    context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,
-               'reports': reports, 'report_form': ReportForm(), 'average_rating': average_rating}
-    return render(request, 'projectdir/projectdetailes.html', context)
+                return redirect('projects.list')
+    else:
+        # Handle unknown form submissions or GET requests here
+        pass
 
+    context = {
+        'project': pro,
+        'images': pro.images.all(),
+        'comments': comments,
+        'comment_form': comment_form,
+        'reports': reports,
+        'report_form': ReportForm(),
+        'average_rating': average_rating
+    }
+    return render(request, 'projectdir/projectdetailes.html', context)
     # context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,'reports': reports, 'report_form': ReportForm()  }
     # return render(request, 'projectdir/projectdetailes.html', context)
-@login_required()      
+@login_required
 def createproject(request):
     if request.method == 'POST':
         metaform = ProjectForm(request.POST)
         formset = ImageFormSet(request.POST, request.FILES)
         if metaform.is_valid() and formset.is_valid():
-            project = metaform.save(commit=False)  # Don't save yet
-            project.user = request.user  # Assign the current user
-            project.save()  # Now save the project
+            project = metaform.save(commit=False)
+            project.user = request.user  # Assign the current user to the project
+            project.save()  # Save the project now that the user is assigned
 
             for form in formset:
                 image = form.cleaned_data.get('image')
@@ -73,14 +115,13 @@ def createproject(request):
         metaform = ProjectForm()
         formset = ImageFormSet()
     return render(request, 'projectdir/projectcreate.html', {'metaform':  metaform, 'formset': formset})
-
 # @login_required()
 # def createproject(request):
 #     if request.method == 'POST':
 #         metaform = ProjectForm(request.POST)
 #         formset = ImageFormSet(request.POST, request.FILES)
 #         if metaform.is_valid() and formset.is_valid():
-#             project = metaform.save()
+#             project = metaform.save(commit=False)
 #             for form in formset:
 #                 image = form.cleaned_data.get('image')
 #                 if image:
@@ -100,6 +141,7 @@ def report_project(request, proid):
             reason = form.cleaned_data['reason']
             # Create a new report instance and save it
             report = Report(project=project, reason=reason)
+            report.user = request.user
             report.save()
             return redirect('thank_you_for_reporting')
     else:
@@ -117,6 +159,7 @@ def report_comment(request, comment_id):
         if form.is_valid():
             reason = form.cleaned_data['comment_reason']
             report = ReportComment(comment=comment, comment_reason=reason)
+            report.user = request.user
             report.save()
             return redirect('thank_you_for_reporting')  # Redirect after successful report
         else:
