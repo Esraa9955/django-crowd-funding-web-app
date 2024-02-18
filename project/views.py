@@ -197,7 +197,7 @@ def cancel_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     if project.is_cancelable:
         project.delete()
-        return redirect(reverse('projects.list'))
+        return redirect(reverse('user_project'))
     else:
         return redirect('user_profile', project_id=project_id)
     
