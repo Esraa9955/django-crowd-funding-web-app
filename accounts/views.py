@@ -58,6 +58,7 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            mobile_phone = form.cleaned_data.get('mobile')
             username = form.cleaned_data.get('username')
             messages.success(request, f'Your account has been created! You are now able to log in')
             return redirect('userImage')
@@ -77,52 +78,49 @@ def DeleteAccount(request, user_id):
     else:
         return redirect('myProfile')
     
-@login_required
-def updateUser(request, user_id):
-    userr=User.objects.get(id=user_id)
-    context={'userr': userr}
-    if (request.method == 'POST'):
-        if (request.POST['username'] !=None) :
-         User.objects.filter(id=user_id).update(username=request.POST['username'],
-                                               first_name=request.POST['first_name'],
-                                               last_name=request.POST['last_name'],
-                                            #    mobile_phone=request.POST['mobile_phone'],
-                                            #    password1=request.POST['password1'],
-                                            #    password2=request.POST['password2'],
-                                            #    profile_picture=request.POST['profile_picture'],
-                                               )
-        r=reverse('myProfile')
-        return HttpResponseRedirect(r)
-    else:
-        context['msg'] = 'Kindly fill all fields'
-    return render(request,'registration/update.html',context)
+# @login_required
+# def updateUser(request, user_id):
+#     userr=User.objects.get(id=user_id)
+#     context={'userr': userr}
+#     if (request.method == 'POST'):
+#         if (request.POST['username'] !=None) :
+#          User.objects.filter(id=user_id).update(username=request.POST['username'],
+#                                                first_name=request.POST['first_name'],
+#                                                last_name=request.POST['last_name'],
+#                                                password1=request.POST['password1'],
+#                                                password2=request.POST['password2'],
+#                                                image=request.POST['image'],
+#                                                )
+#         r=reverse('myProfile')
+#         return HttpResponseRedirect(r)
+#     else:
+#         context['msg'] = 'Kindly fill all fields'
+#     return render(request,'registration/update.html',context)
 
 
 
-@login_required
+from django.shortcuts import render, redirect
+from .forms import AdditionalForm
+
 def additional_info(request):
-    dataformat = None
+    try:
+        additional_info = request.user.additionalinfo
+    except AdditionalInfo.DoesNotExist:
+        additional_info = None
+    
     if request.method == 'POST':
-        form = AdditionalInfoForm(request.POST)
+        form = AdditionalForm(request.POST, instance=additional_info)
         if form.is_valid():
-            birthdate = form.cleaned_data['birthdate']
-            country = form.cleaned_data['country']
-            facebook = form.cleaned_data['facebook']
-            exist_data = AdditionalInfo.objects.filter(user=request.user).first()
-            if exist_data:
-                exist_data.birthdate = birthdate
-                exist_data.country = country
-                exist_data.facebook = facebook
-                exist_data.save()
-            else:
-                AdditionalInfo.objects.create(user=request.user, birthdate=birthdate, country=country, facebook=facebook)
-            return redirect(reverse('myProfile'))  # Redirect to profile page
+            additional_info = form.save(commit=False)
+            additional_info.user = request.user
+            additional_info.save()
+            messages.success(request, 'Additional information saved successfully.')
+            return redirect('user_project')
     else:
-        form = AdditionalInfoForm()
-        form_data = AdditionalInfo.objects.filter(user=request.user).first()
-        if form_data:
-            dataformat = form_data  # Assigning the data directly since you need the entire object
-    return render(request, 'registration/additional_info.html', {'form': form, 'dataformat': dataformat})
+        form = AdditionalForm(instance=additional_info)
+    
+    return render(request, 'registration/additional_info.html', {'form': form})
+
 @login_required
 def userImage(request):
     if request.method == 'POST':
@@ -135,6 +133,18 @@ def userImage(request):
     else:
         form = ProfileForm()
     return render(request, 'registration/userImage.html', {'form': form})
+
+
+
+# def edit_profile(request):
+#     if request.method == 'POST':
+#         form = ProfileEditForm(request.POST, instance=request.user.profile)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('user_project')  
+#     else:
+#         form = ProfileEditForm(instance=request.user.profile)
+#     return render(request, 'registration/edit_profile.html', {'form': form})
 
 
     # additional_info_instance = AdditionalInfo.objects.filter(user=request.user).first()

@@ -10,7 +10,7 @@
     <form action="{% url 'DeleteAccount' user_id=user.id %}" method="post">
         {% csrf_token %}
         <button type="submit">Yes</button>
-        <a href="{% url 'myProfile' %}">No, cancel</a>
+        <a href="{% url 'user_project' %}">No, cancel</a>
     </form>
 </body>
 </html>

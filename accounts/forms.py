@@ -31,14 +31,28 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
+from .models import AdditionalInfo
+
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
+    mobile= forms.CharField(max_length=15, required=False)
+    
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2','mobile']
 
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image']
+
+class AdditionalForm(forms.ModelForm):
+    class Meta:
+        model=AdditionalInfo
+        fields=['birthdate','country','facebook']
+
+# class ProfileEditForm(forms.ModelForm):
+#     class Meta:
+#         model = Profile
+#         fields = ['username', 'first_name', 'last_name', 'image']
