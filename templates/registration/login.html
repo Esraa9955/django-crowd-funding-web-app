@@ -67,26 +67,32 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Login</h2>
-        <!-- {% if error_message %}
-            <p class="error">{{ error_message }}</p>
-        {% endif %} -->
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_username">Username:</label>
-                {{ form.username }}
+    <div class="global-container">
+        <div class="card login-form">
+            <div class="card-body">
+                {% if registration_success %}
+                <h3 class="card-title text-center">You have successfully registered as a user.</h3>
+                {% endif %}
+                <div class="card-text text-center">
+                    <h2>Login</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_username">Username:</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_password">Password:</label>
+                            {{ form.password }}
+                        </div>
+                        <input type="submit" value="Login">
+                        <a href="{% url 'projects.list' %}" class="back-button">Back To Project Lists</a>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="id_password">Password:</label>
-                {{ form.password }}
-            </div>
-            <input type="submit" value="Login">
-           <a href="{% url 'projects.list' %}" class="back-button">Back To Project Lists</a>
-        </form>
+        </div>
     </div>
-    {{error_message}}
+    {{ error_message }}
 </body>
 
 

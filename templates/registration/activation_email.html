@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Activation Email</title>
-</head>
-<body>
-    <p>Hello {{ user.username }},</p>
-    <p>Please click the following link to activate your account:</p>
-    <a href="{{ domain }}{% url 'activate' uidb64=uidb64 token=token %}">Activate Account</a>
-</body>
-</html>
+{% load static %} <!-- Load the static template tag at the beginning -->
+
+Click the link below to activate your account:
+
+{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+This link will expire in 24 hours.

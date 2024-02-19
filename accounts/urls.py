@@ -4,7 +4,7 @@ from .views import *
 from django.contrib.auth.views import auth_login, auth_logout
 from django.contrib.auth.views import LogoutView
 from django.conf.urls.static import static
-from django.conf import settings
+
 
 
 urlpatterns = [
@@ -19,4 +19,6 @@ urlpatterns = [
     # path('edit/<int:user_id>/', views.edit_profile, name='edit'),
     path('info/', views.additional_info, name='additional_info'),
     path('userImage/', views.userImage, name='userImage'),
+    path('accounts/activate/<str:uidb64>/<str:token>/', views.activate, name='activate'),
+    
 ]

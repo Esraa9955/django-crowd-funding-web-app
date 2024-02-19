@@ -1,15 +1,21 @@
-from django.shortcuts import render,redirect,reverse
-from django.contrib.auth.forms import authenticate
+from django.contrib.auth import get_user_model, login as auth_login
 from django.contrib.auth.decorators import login_required
-from django.views.generic import CreateView
-from django.contrib.auth.models import User
-from django.urls import reverse_lazy
-from .models import *
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login as auth_login
 from django.http import HttpResponseRedirect
-from .forms import *
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode
 from django.contrib import messages
+from .forms import  ProfileForm
+from .models import Activation
+from django.http import HttpResponse
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from .models import *
+
+
 
 
 
@@ -32,7 +38,7 @@ def myLogin(request):
 
 @login_required()
 def myProfile(request):
-    return render(request,'registration/profile.html')
+    return render(request,'projectdir/user_profile.html')
 
 
 # class RegistrationForm(CreateView):
@@ -55,17 +61,49 @@ def myProfile(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            mobile_phone = form.cleaned_data.get('mobile')
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created! You are now able to log in')
-            return redirect('userImage')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'registration/register.html', {'form': form})
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')  # Updated variable name
+        password2 = request.POST.get('password2')  # Updated variable name
+        
+        if username and email and password1 and password2:  # Ensure all required keys are present
+            if password1 == password2:  # Ensure passwords match
+                user = User.objects.create_user(username=username, email=email, password=password1)
+                activation = Activation.objects.create(user=user)
+                subject = 'Activate your account'
+                message = render_to_string('registration/activation_email.html', {
+                    'user': user,
+                    'domain': request.get_host(),
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': str(activation.token),
+                })
+                user.email_user(subject, message)
 
+                return render(request, 'registration/login.html')
+            else:
+                return HttpResponse('Passwords do not match.')
+        else:
+            
+            return HttpResponse('Please provide all required information for registration.')
+    else:
+        return render(request, 'registration/register.html')
+    
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist, UnicodeDecodeError):
+        user = None
+    
+    activation = Activation.objects.filter(user=user, token=token).first()
+    if user is not None and activation is not None and not activation.is_expired():
+        user.is_active = True
+        user.save()
+        activation.delete()
+        return render(request, 'registration/activation_success.html')
+    else:
+        return render(request, 'registration/activation_failure.html')
+    
 def delete_confirmation(request, user_id):
     user = User.objects.get(id=user_id)
     return render(request, 'registration/delete_confirmation.html', {'user': user})
@@ -147,31 +185,13 @@ def userImage(request):
 #     return render(request, 'registration/edit_profile.html', {'form': form})
 
 
-    # additional_info_instance = AdditionalInfo.objects.filter(user=request.user).first()
 
-    # if request.method == 'POST':
-    #     if additional_info_instance:  
-    #         form = AdditionalInfoForm(request.POST, request.FILES, instance=additional_info_instance)
-    #     else:  
-    #         form = AdditionalInfoForm(request.POST, request.FILES)
 
-    #     if form.is_valid():
-    #         additional_info = form.save(commit=False)
-    #         additional_info.user = request.user
-    #         additional_info.save()
-    #         return redirect('myProfile')  
-    # else:
-    #     if additional_info_instance: 
-    #         form = AdditionalInfoForm(instance=additional_info_instance)
-    #     else: 
-    #         form = AdditionalInfoForm()
-    
-    # return render(request, 'registration/additional_info.html', {'form': form})
 
-   
+
 
 
     
-    
+
 
 
