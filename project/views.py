@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectRating
 from .forms import RatingForm
 from django.db.models import Avg
-
+from taggit.models import Tag
+from django.views.generic import ListView
 
 def projectslist(request):
     context = {'myprojectslist': Project.project_list()}  # from db
@@ -213,5 +214,9 @@ def user_projects(request):
 #     user_profile = UserProfile.objects.filter(user=request.user).first()
 #     if user_profile:
 #         profile_picture_url = user_profile.profile_picture.url
-
 #     return render(request, 'project/user_profile.html', {'profile_picture_url': profile_picture_url})
+
+class TagsList(ListView):
+    model = Project
+    template_name= 'project/user_profile.html'
+    context_object_name='tags'

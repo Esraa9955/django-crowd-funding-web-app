@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'project.apps.ProjectConfig',
     'accounts.apps.AccountsConfig',
+    'category.apps.CategoryConfig',
+    'taggit',
    
      
     
@@ -76,7 +78,7 @@ DATABASES = {
         "HOST": "localhost",
         "PORT":"5432",
         "USER":"postgres",
-        "PASSWORD":"12345"
+        "PASSWORD":"123"
     }
 }
 
@@ -134,3 +136,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "taghreedmuhammed7@gmail.com"
 EMAIL_HOST_PASSWORD = "nvcsvglenrxsxtek"
+TAGGIT_CASE_INSENSITIVE = True

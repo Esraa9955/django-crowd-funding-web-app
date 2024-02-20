@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from category.models import *
+from taggit.managers import TaggableManager
 
 
 
@@ -13,7 +15,8 @@ class Project(models.Model):
     donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     # Add featured stuff
     is_featured=models.BooleanField(default=False)
-    
+    category=models.ForeignKey(Category, null=True, blank=True, on_delete= models.CASCADE)
+    tags = TaggableManager()
 
     
     @classmethod
