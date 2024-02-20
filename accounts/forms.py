@@ -48,6 +48,14 @@ class UserRegisterForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError("An account with this email already exists")
         return email
+    
+    # def clean_username(self):
+    #  username = self.cleaned_data.get('username')
+    #  if User.objects.filter(username=username).exists():
+    #     raise ValidationError("This username is already taken")
+    #  return username
+
+         
 
 
 class ProfileForm(forms.ModelForm):

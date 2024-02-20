@@ -14,8 +14,9 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from .models import *
-
-
+from django import forms
+from .forms import *
+from django.db import IntegrityError 
 
 
 
@@ -41,53 +42,39 @@ def myProfile(request):
     return render(request,'projectdir/user_profile.html')
 
 
-# class RegistrationForm(CreateView):
-#     form_class = RegistrationForm
-#     template_name = 'registration/register.html'
-#     success_url = reverse_lazy('login')
-
-
-# def register(request):
-#     if request.method == 'POST':
-#         form = RegistrationForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('myProfile')  
-#     else:
-#         form = RegistrationForm()
-#     return render(request, 'registration/register.html', {'form': form})
-
-
-
 def register(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
-        password1 = request.POST.get('password1')  # Updated variable name
-        password2 = request.POST.get('password2')  # Updated variable name
-        
-        if username and email and password1 and password2:  # Ensure all required keys are present
-            if password1 == password2:  # Ensure passwords match
-                user = User.objects.create_user(username=username, email=email, password=password1)
-                activation = Activation.objects.create(user=user)
-                subject = 'Activate your account'
-                message = render_to_string('registration/activation_email.html', {
-                    'user': user,
-                    'domain': request.get_host(),
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': str(activation.token),
-                })
-                user.email_user(subject, message)
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        mobile_phone = request.POST.get('mobile_phone')
 
-                return render(request, 'registration/login.html')
+        if username and email and password1 and password2 and mobile_phone:  # Ensure all required fields are present
+            if password1 == password2:  # Ensure passwords match
+                if not mobile_phone.startswith('+20'):  # Ensure mobile phone starts with +20
+                    return render(request, 'registration/register.html', {'error_message': 'Mobile number should start with +20'})
+
+                try:
+                    user = User.objects.create_user(username=username, email=email, password=password1)
+                    activation = Activation.objects.create(user=user)
+                    subject = 'Activate your account'
+                    message = render_to_string('registration/activation_email.html', {
+                        'user': user,
+                        'domain': request.get_host(),
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': str(activation.token),
+                    })
+                    user.email_user(subject, message)
+                    return render(request, 'registration/login.html')
+                except IntegrityError:
+                    return render(request, 'registration/register.html', {'error_message': 'This username already exists.'})
             else:
-                return HttpResponse('Passwords do not match.')
+                return render(request, 'registration/register.html', {'error_message': 'Passwords do not match.'})
         else:
-            
             return HttpResponse('Please provide all required information for registration.')
     else:
         return render(request, 'registration/register.html')
-    
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -116,24 +103,24 @@ def DeleteAccount(request, user_id):
     else:
         return redirect('myProfile')
     
-# @login_required
-# def updateUser(request, user_id):
-#     userr=User.objects.get(id=user_id)
-#     context={'userr': userr}
-#     if (request.method == 'POST'):
-#         if (request.POST['username'] !=None) :
-#          User.objects.filter(id=user_id).update(username=request.POST['username'],
-#                                                first_name=request.POST['first_name'],
-#                                                last_name=request.POST['last_name'],
-#                                                password1=request.POST['password1'],
-#                                                password2=request.POST['password2'],
-#                                                image=request.POST['image'],
-#                                                )
-#         r=reverse('myProfile')
-#         return HttpResponseRedirect(r)
-#     else:
-#         context['msg'] = 'Kindly fill all fields'
-#     return render(request,'registration/update.html',context)
+@login_required
+def updateUser(request, user_id):
+    userr=User.objects.get(id=user_id)
+    context={'userr': userr}
+    if (request.method == 'POST'):
+        if (request.POST['username'] !=None) :
+         User.objects.filter(id=user_id).update(username=request.POST['username'],
+                                               first_name=request.POST['first_name'],
+                                               last_name=request.POST['last_name'],
+                                            #    password1=request.POST['password1'],
+                                            #    password2=request.POST['password2'],
+                                            #    image=request.POST['image'],
+                                               )
+        r=reverse('user_project')
+        return HttpResponseRedirect(r)
+    else:
+        context['msg'] = 'Kindly fill all fields'
+    return render(request,'registration/update.html',context)
 
 
 
@@ -174,15 +161,7 @@ def userImage(request):
 
 
 
-# def edit_profile(request):
-#     if request.method == 'POST':
-#         form = ProfileEditForm(request.POST, instance=request.user.profile)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('user_project')  
-#     else:
-#         form = ProfileEditForm(instance=request.user.profile)
-#     return render(request, 'registration/edit_profile.html', {'form': form})
+
 
 
 

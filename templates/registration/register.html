@@ -74,6 +74,11 @@
                         </div>
                     {% endfor %}
                 {% endif %}
+                {% if error_message %}
+                    <div class="alert-danger">
+                        {{ error_message }}
+                    </div>
+                {% endif %}
             </div>
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -108,6 +113,7 @@
                 {% if form.mobile_phone.errors %}
                     <span class="error-msg">{{ form.mobile_phone.errors }}</span>
                 {% endif %}
+                <span id="mobile_error" style="color: red; display: none;">Mobile phone should start with +20</span>
             </div>
             <!-- <div class="form-group">
                 <label for="profile_picture">Profile Picture:</label>
@@ -116,7 +122,5 @@
             <button type="submit">Register</button>
         </form>
     </div>
-    
-</body>
 </html>
 
