@@ -49,7 +49,7 @@
                               <div class="col mb-5 h-100">
                                 <div class="feature rounded-3 " >
                                 {% if project.images.exists %}
-                                    <img class="img-fluid rounded-3 my-5" width="300px" src="{{ project.images.first.image.url }}" alt="..." />
+                                    <img class="img-fluid rounded-3 my-5" src="{{ project.images.first.image.url }}" alt="..." />
                                 {% else %}
                                     
                                     <img class="img-fluid rounded-3 my-5" src="{% static 'images/404.png' %}" alt="Default Image" />
