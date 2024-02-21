@@ -31,7 +31,7 @@
                             <div id="project-slider" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner">
                                     {% for project in highest_rated_projects %}
-                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <div class="text-center carousel-item {% if forloop.first %}active{% endif %}">
                                            
                                             <img class="img-fluid rounded-3 my-2" width="300px" height="250" src="{{ project.images.first.image.url }}" alt="..." />
                                             
