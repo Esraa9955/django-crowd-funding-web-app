@@ -16,4 +16,5 @@ urlpatterns = [
     path('project/<int:project_id>/cancel/', views.cancel_project, name='cancel_project'),
     path('userprofile/', views.user_projects, name='user_project'),
     path("tag/<slug:slug>/", views.Tagging, name='tagged'),
+    
 ]

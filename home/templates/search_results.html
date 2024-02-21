@@ -16,11 +16,11 @@
   <body>
     <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded container">
       <h3 class="card-header" style="background-color: #eee; font-weight: bold">
-        {{products}}
+        {{projects.query}}
       </h3>
       <div class="card-body">
         <div class="row">
-          {% for project in projects %}
+          {% for project in projects.result_list %}
           <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
             <div class="card">
               <img

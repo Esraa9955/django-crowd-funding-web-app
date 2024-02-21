@@ -5,6 +5,8 @@ from project.models import *
 from category.models import *
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
+from taggit.models import Tag
+from itertools import chain
 def home(request):
   projects = Project.objects.all()
   category = Category.objects.all()
@@ -58,4 +60,12 @@ class Search(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('proName')
-        return Project.objects.filter(title__icontains=query)
+        tags = Tag.objects.filter(slug=query).values_list('name', flat=True)
+        projects = Project.objects.filter(tags__name__in=tags) 
+        projects2=Project.objects.filter(title__icontains=query)
+        result_list = list(chain(projects, projects2))
+        context = {
+        'result_list':result_list,
+        'query': query,
+        }   
+        return context
