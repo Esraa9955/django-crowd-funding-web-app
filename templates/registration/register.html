@@ -108,10 +108,10 @@
                 <input type="text" name="last_name" id="lname" class="form-control form-control-sm">
             </div>
             <div class="form-group">
-                <label for="mobile_phone">Mobile Phone:</label>
-                <input type="text" name="mobile_phone" id="mobile_phone" class="form-control form-control-sm">
-                {% if form.mobile_phone.errors %}
-                    <span class="error-msg">{{ form.mobile_phone.errors }}</span>
+                <label for="mobile">Mobile Phone:</label>
+                <input type="text" name="mobile" id="mobile" class="form-control form-control-sm">
+                {% if form.mobile.errors %}
+                    <span class="error-msg">{{ form.mobile.errors }}</span>
                 {% endif %}
                 <span id="mobile_error" style="color: red; display: none;">Mobile phone should start with +20</span>
             </div>

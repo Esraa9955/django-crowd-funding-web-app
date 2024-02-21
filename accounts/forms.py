@@ -34,26 +34,26 @@ from .models import Profile
 from .models import AdditionalInfo
 from django.core.exceptions import ValidationError
 
+
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
-    # mobile= forms.CharField(max_length=15, required=False)
-    
+    first_name = forms.CharField(max_length=30)
+    last_name = forms.CharField(max_length=30)
+    mobile = forms.CharField(max_length=15, required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'mobile']
         
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("An account with this email already exists")
-        return email
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        if commit:
+            user.save()
+        return user
     
-    # def clean_username(self):
-    #  username = self.cleaned_data.get('username')
-    #  if User.objects.filter(username=username).exists():
-    #     raise ValidationError("This username is already taken")
-    #  return username
+   
 
          
 
@@ -61,14 +61,19 @@ class UserRegisterForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['image']
+        fields = ['image','mobile']
 
 class AdditionalForm(forms.ModelForm):
     class Meta:
         model=AdditionalInfo
         fields=['birthdate','country','facebook']
 
-# class ProfileEditForm(forms.ModelForm):
-#     class Meta:
-#         model = Profile
-#         fields = ['username', 'first_name', 'last_name', 'image']
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name']
+        
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image', 'mobile']

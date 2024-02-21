@@ -48,15 +48,17 @@ def register(request):
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
-        mobile_phone = request.POST.get('mobile_phone')
+        mobile = request.POST.get('mobile')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
 
-        if username and email and password1 and password2 and mobile_phone:  # Ensure all required fields are present
-            if password1 == password2:  # Ensure passwords match
-                if not mobile_phone.startswith('+20'):  # Ensure mobile phone starts with +20
+        if username and email and password1 and password2 and mobile and first_name and last_name:
+            if password1 == password2:
+                if not mobile.startswith('+20'):
                     return render(request, 'registration/register.html', {'error_message': 'Mobile number should start with +20'})
 
                 try:
-                    user = User.objects.create_user(username=username, email=email, password=password1)
+                    user = User.objects.create_user(username=username, email=email, password=password1, first_name=first_name, last_name=last_name)
                     activation = Activation.objects.create(user=user)
                     subject = 'Activate your account'
                     message = render_to_string('registration/activation_email.html', {
@@ -66,7 +68,7 @@ def register(request):
                         'token': str(activation.token),
                     })
                     user.email_user(subject, message)
-                    return render(request, 'registration/login.html')
+                    return render(request, 'registration/check.html')
                 except IntegrityError:
                     return render(request, 'registration/register.html', {'error_message': 'This username already exists.'})
             else:
@@ -75,6 +77,8 @@ def register(request):
             return HttpResponse('Please provide all required information for registration.')
     else:
         return render(request, 'registration/register.html')
+    
+    
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -105,22 +109,27 @@ def DeleteAccount(request, user_id):
     
 @login_required
 def updateUser(request, user_id):
-    userr=User.objects.get(id=user_id)
-    context={'userr': userr}
-    if (request.method == 'POST'):
-        if (request.POST['username'] !=None) :
-         User.objects.filter(id=user_id).update(username=request.POST['username'],
-                                               first_name=request.POST['first_name'],
-                                               last_name=request.POST['last_name'],
-                                            #    password1=request.POST['password1'],
-                                            #    password2=request.POST['password2'],
-                                            #    image=request.POST['image'],
-                                               )
-        r=reverse('user_project')
-        return HttpResponseRedirect(r)
+    userr = User.objects.get(id=user_id)
+    profile = Profile.objects.get(user=userr)
+    context = {'userr': userr}
+    
+    if request.method == 'POST':
+        # Creating a form instance with the submitted data
+        user_form = UserUpdateForm(request.POST, instance=userr)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return HttpResponseRedirect(reverse('user_project'))
     else:
-        context['msg'] = 'Kindly fill all fields'
-    return render(request,'registration/update.html',context)
+        # Pre-populate the forms with current data
+        user_form = UserUpdateForm(instance=userr)
+        profile_form = ProfileUpdateForm(instance=profile)
+    
+    context['user_form'] = user_form
+    context['profile_form'] = profile_form
+    return render(request, 'registration/update.html', context)
 
 
 
