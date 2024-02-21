@@ -85,8 +85,7 @@ def projectdetailes(request, proid):
         # Handle unknown form submissions or GET requests here
         pass
     tags = pro.tags.values_list('name', flat=True)
-    related_projects = Project.objects.filter(tags__name__in=tags)
-    related_projects2 = related_projects.exclude(id=pro.id)
+    related_projects = list(dict.fromkeys(Project.objects.filter(tags__name__in=tags).exclude(id=pro.id)))
     context = {
         'project': pro,
         'images': pro.images.all(),
@@ -96,7 +95,7 @@ def projectdetailes(request, proid):
         'report_form': ReportForm(),
         'average_rating': average_rating,
         'tags': tags,
-        'related_projects':related_projects2
+        'related_projects': related_projects
     }
     return render(request, 'projectdir/projectdetailes.html', context)
     # context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,'reports': reports, 'report_form': ReportForm()  }
@@ -211,6 +210,18 @@ def user_projects(request):
     # Retrieve projects associated with the currently logged-in user
     user_projects = Project.objects.filter(user=request.user)  
     return render(request, 'projectdir/user_profile.html', {'user_projects': user_projects})
+
+def Tagging(request, slug):
+
+    tags = Tag.objects.filter(slug=slug).values_list('name', flat=True)
+    projects = Project.objects.filter(tags__name__in=tags)
+
+    context = {
+        'tags': tags,
+        'projects': projects,
+        'tag_name': slug
+    }
+    return render(request, 'projectdir/project_tag.html', context)
 
 # def user_profile(request):
 #     # Retrieve the current user's profile picture URL
