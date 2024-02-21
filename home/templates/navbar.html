@@ -2,6 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container px-5">
     <a class="navbar-brand" href="index.html">CrowdFunding</a>
+
     <button
       class="navbar-toggler"
       type="button"
@@ -13,8 +14,10 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <!--  -->
         {% if user.is_superuser %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'category.list' %}">Category</a>
