@@ -15,8 +15,8 @@ class Project(models.Model):
     donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     # Add featured stuff
     is_featured=models.BooleanField(default=False)
-    category=models.ForeignKey(Category, null=True, blank=True, on_delete= models.CASCADE)
-    tags = TaggableManager()
+    category=models.ForeignKey(Category, on_delete= models.CASCADE,default=None)
+    tags = TaggableManager(blank=True)
 
     
     @classmethod

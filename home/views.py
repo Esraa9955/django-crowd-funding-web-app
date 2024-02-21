@@ -36,7 +36,8 @@ def Cate(request, id):
         'cate':cate,
         'projects': projects,
     }
-    return render(request, 'search_results.html', context)
+    return render(request, 'category_res.html', context)
+
 
 # def Search(request):
 #     # if request.method == 'POST':

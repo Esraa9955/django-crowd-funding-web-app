@@ -57,7 +57,7 @@ def projectdetailes(request, proid):
         # Handle unknown form submissions or GET requests here
         pass
     tags = pro.tags.values_list('name', flat=True)
-    related_projects = list(dict.fromkeys(Project.objects.filter(tags__name__in=tags).exclude(id=pro.id)))
+    related_projects = list(dict.fromkeys(Project.objects.filter(tags__name__in=tags).exclude(id=pro.id)))[:3]
     context = {
         'project': pro,
         'images': pro.images.all(),
