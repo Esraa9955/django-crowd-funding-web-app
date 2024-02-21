@@ -109,6 +109,7 @@ def createproject(request):
             project = metaform.save(commit=False)
             project.user = request.user  # Assign the current user to the project
             project.save()  # Save the project now that the user is assigned
+            metaform.save_m2m()
 
             for form in formset:
                 image = form.cleaned_data.get('image')
