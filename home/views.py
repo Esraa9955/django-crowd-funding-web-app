@@ -4,6 +4,7 @@ from django.shortcuts import render
 from project.models import *
 from category.models import *
 from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView
 def home(request):
   projects = Project.objects.all()
   category = Category.objects.all()
@@ -34,3 +35,27 @@ def Cate(request, id):
         'projects': projects,
     }
     return render(request, 'search_results.html', context)
+
+# def Search(request):
+#     # if request.method == 'POST':
+#         # metaform = ProjectForm(request.POST)
+#         # cate = Category.objects.filter(id=id).values_list('name', flat=True).first()
+#         # projects = Project.objects.filter(category=id)
+#         proName=request.GET
+#         projects = Project.objects.filter()
+
+#         context = {
+#             # 'cate':cate,
+#             'projects': proName,
+#         }
+#         return render(request, 'search_results.html', context)
+#     # else:
+#     #     return "failed"
+class Search(ListView):
+    model = Project
+    template_name = 'search_results.html'
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        query = self.request.GET.get('proName')
+        return Project.objects.filter(title__icontains=query)
