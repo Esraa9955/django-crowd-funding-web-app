@@ -7,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>projects list</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  />
+  
 
 </head>
 
@@ -18,168 +23,175 @@
         background-color: white;
     }
 
-    table {
-        width: 80%;
-        margin: 20px auto;
-        border-collapse: collapse;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    .card {
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    th,
-    td {
-        padding: 15px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-        font-weight: bold;
-    }
-
-    th {
+    .card-header {
         background-color: #4da6ff;
         color: white;
+        font-weight: bold;
+        padding: 10px 15px;
+        border-bottom: 1px solid #ddd;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
     }
 
-    img {
-        max-width: 100px;
-        height: auto;
+    .card-body {
+        padding: 20px;
     }
 
-    td a {
-        display: inline-block;
-        padding: 8px 15px;
+    .card-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        color: #777;
+        margin-bottom: 15px;
+    }
+
+    .btn {
         background-color: #3498db;
         color: white;
-        text-decoration: none;
+        border: none;
         border-radius: 3px;
+        padding: 8px 15px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
     }
 
-    td a:hover {
+    .btn:hover {
         background-color: #2980b9;
     }
 
-    p {
-        text-align: center;
-        font-size: 18px;
-        color: #777;
-        margin-top: 20px;
+    .carousel-item img {
+        width: 100%;
+        height: 200px;
     }
+    .stars {
+        display: inline-block;
+        font-size: 20px; /* Adjust the font size as needed */
+        color: gold; /* Change the color of the stars */
+      }
 
-
-
-    .add {
-        /* display: block; */
-        margin-bottom: 20px;
-        padding: 10px;
-        background-color: black;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
-        width: 9%;
-    }
-
-    .all {
-
-        margin: 20px;
-        margin-left: 130px;
-    }
-
-    .mybtn {
-        margin: 10px;
-    }
+      .stars .fa-star {
+        margin-right: 5px; /* Adjust the spacing between stars */
+      }
 </style>
 
 
 
 <body>
-    <div >
-        <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5 ">
             <div class="container ">
-            <a class="navbar-brand" style="font-weight: 600; color: #3498db;" href="#">FundWise</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" style="font-weight: 600;" href="{% url 'user_project' %}">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="font-weight: 600;" href="{% url 'project.create' %}">Create Project</a>
-                    </li>
-                    {% if user.is_authenticated %}
+                <a class="navbar-brand" style="font-weight: 600; color: #3498db;" href="#">FundWise</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" style="font-weight: 600;" href="{% url 'user_project' %}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="font-weight: 600;" href="{% url 'project.create' %}">Create
+                                Project</a>
+                        </li>
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
                             <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
-                                <button type="submit" class="nav-link" style="padding: none; border: none; background-color: transparent;  font-weight: 600;">Logout</button>
+                                <button type="submit" class="nav-link"
+                                    style="padding: none; border: none; background-color: transparent;  font-weight: 600;">Logout</button>
                             </form>
                         </li>
-                    {% else %}
+                        {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'register' %}">Register</a>
                         </li>
-                    {% endif %}
-                </ul>
-            </div>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </nav>
     </div>
+    <div class="container">
+        <div class="row">
+            {% if myprojectslist %}
+                {% for project in myprojectslist %}
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div id="carousel{{ project.id }}" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% for image in project.images.all %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <img src="{{ image.image.url }}" class="d-block w-100" alt="Project Image">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <a class="carousel-control-prev" href="#carousel{{ project.id }}" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carousel{{ project.id }}" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ project.title }}</h5>
+                                <p class="card-text">Total Target: {{ project.total_target }}</p>
+                                <p class="card-text">Donation Amount: {{ project.donation_amount }}</p>
+                               
+                                <div class="stars">
+                                    {% for key, value in user_ratings.items %}
+                                        {% if key == project.id %}
+                                            {% for i in "12345" %}
+                                                {% if i|add:"0" <= value %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'project.detailes' project.id %}" class="btn btn-primary">Show Details</a>
+                                    <a href="{% url 'rate_project' project.id %}" class="btn btn-success">Rate</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col">
+                    <p>No projects available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
     
     
-    <!-- <div class="all">
-        {%if user.id%}
-        <form method="post" action="{% url 'logout' %}" >
-            {%csrf_token%}
-            <button type="submit" class="add">Logout</button>
-            </form>
-        {%else%}
-        <a class="add" href="{%url 'login' %}">Login</a>
-        {%endif%}
-        <a class="add" href="{%url 'register' %}">Register</a>
-        <a class="add" href="{%url 'user_project'%}">Profile</a>
-    </div> -->
+    
+    
 
-    {% if myprojectslist %}
-    <table border="5px">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                
-                <th>Total target</th>
-
-                <th>Donation Amount</th>
-                <th>Actions</th>
-                <th>Rate</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for project in myprojectslist %}
-            <tr>
-                <td>{{ project.id }}</td>
-                <td>{{ project.title }}</td>
-               
-                <td>{{ project.total_target }}</td>
-
-                <td>{{ project.donation_amount }}</td>
-                <td><a class="mybtn" href="{% url 'project.detailes' project.id%}">Show details</a><br>
-
-                </td>
-                <td><a href="{% url 'rate_project' project.id %}">Rate</a></td>
-
-
-
-
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No projects available.</p>
-    {% endif %}
-
+    <!-- Include Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

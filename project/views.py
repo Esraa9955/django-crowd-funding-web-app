@@ -11,46 +11,18 @@ from taggit.models import Tag
 from django.views.generic import ListView
 
 def projectslist(request):
-    context = {'myprojectslist': Project.project_list()}  # from db
+    myprojectslist = Project.project_list()  # Assuming this returns a list of projects
+    user_ratings = {}  # Dictionary to store user ratings for each project
+    if request.user.is_authenticated:
+        for project in myprojectslist:
+            user_rating_instance = ProjectRating.objects.filter(user=request.user, project=project).first()
+            if user_rating_instance:
+                user_ratings[project.id] = user_rating_instance.rating
+            else:
+                user_ratings[project.id] = None  # Set to None if user hasn't rated the project
+
+    context = {'myprojectslist': myprojectslist, 'user_ratings': user_ratings}
     return render(request, 'projectdir/projectlist.html', context)
-
-
-# def projectdetailes(request, proid):
-#     pro = Project.objects.get(id=proid)
-#     comments = pro.comments.all()
-#     comment_form = CommentForm()
-#     reports = Report.objects.filter(project=pro)
-#     # Calculate average rating
-#     average_rating = ProjectRating.objects.filter(project=pro).aggregate(Avg('rating'))['rating__avg']
-#     if request.method == 'POST':
-#         print("POST request received")
-#         print(request.POST)  # Print POST data for debugging
-#         if 'donation_amount' in request.POST:
-#             print("Donation form submitted")
-#             donation_amount = Decimal(request.POST.get('donation_amount', 0))
-#             print("Donation amount:", donation_amount)
-#             if donation_amount > 0:
-#                 pro.donation_amount += donation_amount
-#                 pro.save()
-#                 print("Donation amount updated")
-#                 return redirect(reverse("projects.list"))
-#         elif 'content' in request.POST:
-#             print("Comment form submitted")
-#             comment_form = CommentForm(request.POST)
-#             if comment_form.is_valid():
-#                 new_comment = comment_form.save(commit=False)
-#                 new_comment.project = pro
-#                 new_comment.user = request.user 
-#                 new_comment.save()
-#                 print("Comment saved")
-#                 return redirect("projects.list")
-#             else:
-#                 print("Comment form is not valid")
-#         else:
-#             print("Unknown form submitted")
-#     context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,
-#                'reports': reports, 'report_form': ReportForm(), 'average_rating': average_rating}
-#     return render(request, 'projectdir/projectdetailes.html', context)
 
 def projectdetailes(request, proid):
     try:
