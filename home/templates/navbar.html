@@ -1,7 +1,7 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container px-5">
-    <a class="navbar-brand" href="index.html">CrowdFunding</a>
+    <a class="navbar-brand" href="{% url 'home'%}">CrowdFunding</a>
 
     <button
       class="navbar-toggler"
@@ -17,8 +17,39 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+       
+        <li class="nav-item"><a class="nav-link" href="{% url 'home'%}">Home</a></li>
+        {% if user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'category.list' %}">Category</a>
+        </li>
+        {% endif %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'projects.list' %}">Project List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'project.create' %}">Create Project</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'user_project' %}">Profile</a>
+        </li>
+        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link" style="padding: none; border: none; background-color: transparent;  font-weight: 600;">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">login</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+        {% endif %}
+
         <li>
-          <form method="get" action="{% url 'search' %}" class="form-inline">
+          <form method="get" action="{% url 'search' %}" class="form-inline ms-4">
             {% csrf_token %}
             <input
               class="form-control mr-sm-2"
@@ -28,70 +59,6 @@
               name="proName"
             />
           </form>
-        </li>
-        {% if user.is_superuser %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'category.list' %}">Category</a>
-        </li>
-        {% endif %}
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item">
-          <a class="nav-link" href="about.html">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="contact.html">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pricing.html">Pricing</a>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            id="navbarDropdownBlog"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Blog</a
-          >
-          <ul
-            class="dropdown-menu dropdown-menu-end"
-            aria-labelledby="navbarDropdownBlog"
-          >
-            <li>
-              <a class="dropdown-item" href="blog-home.html">Blog Home</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="blog-post.html">Blog Post</a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            id="navbarDropdownPortfolio"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Portfolio</a
-          >
-          <ul
-            class="dropdown-menu dropdown-menu-end"
-            aria-labelledby="navbarDropdownPortfolio"
-          >
-            <li>
-              <a class="dropdown-item" href="portfolio-overview.html"
-                >Portfolio Overview</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="portfolio-item.html"
-                >Portfolio Item</a
-              >
-            </li>
-          </ul>
         </li>
       </ul>
     </div>
