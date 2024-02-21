@@ -84,7 +84,9 @@ def projectdetailes(request, proid):
     else:
         # Handle unknown form submissions or GET requests here
         pass
-
+    tags = pro.tags.values_list('name', flat=True)
+    related_projects = Project.objects.filter(tags__name__in=tags)
+    related_projects2 = related_projects.exclude(id=pro.id)
     context = {
         'project': pro,
         'images': pro.images.all(),
@@ -92,7 +94,9 @@ def projectdetailes(request, proid):
         'comment_form': comment_form,
         'reports': reports,
         'report_form': ReportForm(),
-        'average_rating': average_rating
+        'average_rating': average_rating,
+        'tags': tags,
+        'related_projects':related_projects2
     }
     return render(request, 'projectdir/projectdetailes.html', context)
     # context = {'project': pro, 'images': pro.images.all(), 'comments': comments, 'comment_form': comment_form,'reports': reports, 'report_form': ReportForm()  }
@@ -205,7 +209,7 @@ def cancel_project(request, project_id):
 
 def user_projects(request):
     # Retrieve projects associated with the currently logged-in user
-    user_projects = Project.objects.filter(user=request.user)
+    user_projects = Project.objects.filter(user=request.user)  
     return render(request, 'projectdir/user_profile.html', {'user_projects': user_projects})
 
 # def user_profile(request):
@@ -216,7 +220,7 @@ def user_projects(request):
 #         profile_picture_url = user_profile.profile_picture.url
 #     return render(request, 'project/user_profile.html', {'profile_picture_url': profile_picture_url})
 
-class TagsList(ListView):
-    model = Project
-    template_name= 'project/user_profile.html'
-    context_object_name='tags'
+# class TagsList(ListView):
+#     model = Project
+#     template_name= 'project/user_profile.html'
+#     context_object_name='tags'

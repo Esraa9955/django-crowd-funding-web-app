@@ -225,9 +225,15 @@
           <p class="detail-text">
             <strong>End Time:</strong> {{ project.end_time }}
           </p>
-          <p class="detail-text"><strong>Tags:</strong> {% for tag in project.tags.all %}
-            <p>{{tag.name}}</p>
-            {% endfor %}</p>
+          <p class="detail-text">
+            <strong>Category:</strong> {{ project.category }}
+          </p>
+          <p class="detail-text">
+            <strong>Tags:</strong>
+            {% for tag in tags %}
+            <a href="#">{{tag}}</a>
+            {% endfor %}
+          </p>
         </div>
 
         <div
@@ -386,6 +392,62 @@
             {% csrf_token %}
             <button type="submit">Report Project</button>
           </form>
+        </div>
+      </div>
+    </div>
+    <!-- ------------------------------ -->
+
+    <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded container">
+      <h3 class="card-header" style="background-color: #eee; font-weight: bold">
+        Related Projects
+      </h3>
+      <div class="card-body">
+        <div class="row">
+          {% for project in related_projects %}
+          <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card">
+              <img
+                style="height: 150px"
+                src="{{ project.images.first.image.url }}"
+                class="card-img-top"
+                alt="Project Image"
+              />
+              <div class="card-body">
+                <h5 class="card-title">{{ project.title }}</h5>
+                <p class="card-text">{{ project.details }}</p>
+                <h5 class="card-title">{{ project.donation_amount }}</h5>
+                <p class="card-text">
+                  <strong>Category:</strong> {{ project.category }}
+                </p>
+                {% for tag in tags %}
+                <a href="#">{{tag.name}}</a>
+                {% endfor %}
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  "
+                >
+                  <a
+                    class="mybtn"
+                    href="{% url 'project.detailes' project.id %}"
+                    >Show details</a
+                  >
+                  <form
+                    method="post"
+                    action="{% url 'cancel_project' project.id %}"
+                  >
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
       </div>
     </div>

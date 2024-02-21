@@ -180,7 +180,9 @@
                       <h5 class="card-title">{{ project.title }}</h5>
                       <p class="card-text">{{ project.details }}</p>
                       <h5 class="card-title">{{ project.donation_amount }}</h5>
-                      <h5 class="card-title">{{ project.category }}</h5>
+                      <p class="card-text">
+                        <strong>Category:</strong> {{ project.category }}
+                      </p>
                       {% for tag in project.tags.all %}
                       <a href="#">{{tag.name}}</a>
                       {% endfor %}
